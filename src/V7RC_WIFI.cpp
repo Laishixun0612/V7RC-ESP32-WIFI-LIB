@@ -1,10 +1,12 @@
-/*V7RC BLE控制庫 (v250211)
+/*V7RC BLE控制庫 (v250501)n
 *操作問題請回報(hr_user@trgreat.com)
+*
 */
 
 
 #include <V7RC_WIFI.h>
 #include <WiFi.h>
+#include "esp_wifi.h"
 #include "esp_timer.h"
 #include "Arduino.h"
 #include "fb_gfx.h"
@@ -44,10 +46,10 @@ int V7RC_A[4] ={3,7,11,15};
 int V7RC_B[4] ={7,11,15,19};
 byte numberBase=10;
 
-void V7RC_WIFI::setupWIFI(const char* ssid, const char* password){
+void V7RC_WIFI::setupWIFI(const char* ssid, const char* password, const int channel){
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   WiFi.persistent(false);
-  WiFi.softAP(ssid, password);
+  WiFi.softAP(ssid, password, channel, 0, 1); //SSID, password, channel, hidden, max connection
   #ifdef udp_on
   udp.begin(udpPort);
   #endif
@@ -55,11 +57,20 @@ void V7RC_WIFI::setupWIFI(const char* ssid, const char* password){
 }
 
 
-String V7RC_WIFI::readData(){
+String V7RC_WIFI::readdata(){
  return receive_data;
 }
 
-void V7RC_WIFI::udpCheck(){
+bool checkConnected(){
+  // 確認連線數量
+  wifi_sta_list_t wifi_sta_list;
+  esp_wifi_ap_get_sta_list(&wifi_sta_list);
+
+  // 如果連線數是0，則表示沒有連線
+  return wifi_sta_list.num ==0 ? false : true;
+}
+
+bool V7RC_WIFI::connect(){
   #ifdef udp_on
   while (true){
     udp_packet_not_empty = (udp.parsePacket() > 0);
@@ -70,7 +81,8 @@ void V7RC_WIFI::udpCheck(){
       udp_packet_loaded = false;
       break;
     } else {
-      // 錯誤訊息
+        // 如果沒有連線，return false
+        if (!checkConnected()) return false;
     }
   }
   receive_data = String(packetBuffer);
@@ -78,6 +90,8 @@ void V7RC_WIFI::udpCheck(){
   udp_packet_not_empty = false;
   udp_packet_loaded = false;
   #endif 
+
+ return true;
 }
 
 bool V7RC_WIFI::setMode(String mod){

@@ -13,8 +13,8 @@ V7RC_WIFI	KEYWORD1
 #######################################
 
 setupWIFI	KEYWORD2
-udpCheck	KEYWORD2
-readData	KEYWORD2
+connect	KEYWORD2
+readdata	KEYWORD2
 setMode	KEYWORD2
 readSRTdata	KEYWORD2
 #######################################

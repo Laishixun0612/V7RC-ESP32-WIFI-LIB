@@ -1,3 +1,4 @@
+//專門給TUBITBLOCK使用
 #ifndef V7RC_WIFI_h
 #define V7RC_WIFI_h
 
@@ -17,10 +18,9 @@ private :
 
 public :
 
-void setupWIFI(const char* ssid, const char* password);
-
-void udpCheck();
-String readData();
+void setupWIFI(const char* ssid, const char* password, const int channel);
+bool connect();
+String readdata();
 bool setMode(String mod);
 int readSRTdata(int sc);
 
