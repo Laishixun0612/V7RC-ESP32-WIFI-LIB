@@ -36,7 +36,8 @@ void loop() {
 /*方法使用
 v7rc.setupWIFI(sid,pasword)//設定 WIFI名稱/ 密碼 / 頻道(1-13)
 v7rc.connect()//判斷是否連線成功
-v7rc.readData()讀取資料 // 回傳值:String
+v7rc.readdata()讀取資料 // 回傳值:String
 v7rc.setMode("SRT") 模式是否為SRT // 回傳值:boolean
 v7rc.readSRTdata(1) 讀取SRT資料(1~4) // 回傳值:int
 */
+
